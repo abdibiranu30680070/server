@@ -11,12 +11,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Import routers
 const adminRouter = require('./Routes/adminRouter.js');
 const userRouter = require('./Routes/userRouter.js');
-const appRouter = require('./Routes/appRouter.js'); 
+const appRouter = require('./Routes/appRouter.js');
+const authRoutes = require("./Routes/auth");
 
 // Use routers
 app.use('/admin', adminRouter);
 app.use('/', userRouter); 
-app.use('/', appRouter); 
+app.use('/', appRouter);
+app.use("/api/auth", authRoutes);
 
 // Health check route
 app.get('/', (req, res) => {
@@ -24,17 +26,7 @@ app.get('/', (req, res) => {
 });
 
 // Server initialization
-<<<<<<< HEAD
-const port = process.env.PORT || 3001; // Using environment variable for the port
+const port = process.env.PORT || 4001; // Using environment variable or fallback port
 app.listen(port, () => {
     console.log(`Server started successfully on port ${port}`);
 });
-=======
-const port = process.env.PORT || 4001; // Using environment variable for the port
-app.listen(port, () => {
-    console.log(`Server started successfully on port ${port}`);
-});
-const authRoutes = require("./Routes/auth");
-app.use("/api/auth", authRoutes);
-
->>>>>>> 1845fcf (Initial commit)
