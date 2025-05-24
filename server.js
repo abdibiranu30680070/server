@@ -24,7 +24,17 @@ app.get('/', (req, res) => {
 });
 
 // Server initialization
+<<<<<<< HEAD
 const port = process.env.PORT || 3001; // Using environment variable for the port
 app.listen(port, () => {
     console.log(`Server started successfully on port ${port}`);
 });
+=======
+const port = process.env.PORT || 4001; // Using environment variable for the port
+app.listen(port, () => {
+    console.log(`Server started successfully on port ${port}`);
+});
+const authRoutes = require("./Routes/auth");
+app.use("/api/auth", authRoutes);
+
+>>>>>>> 1845fcf (Initial commit)

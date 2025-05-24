@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { 
     getAllUsers, deleteUser, updateUserRole, fetchSystemStats, fetchAuditLogs, 
+<<<<<<< HEAD
     getAllPatients, deletePatient, exportCSV, exportExcel , fetchPredictionStats
+=======
+    getAllPatients, deletePatient, exportCSV, exportExcel , fetchPredictionStats , getAllFeedback
+>>>>>>> 1845fcf (Initial commit)
 } = require('../Controller/adminController');
 const { authenticate, isAdmin } = require('../middleware/auth');
 
@@ -24,6 +28,10 @@ router.get('/export/csv', authenticate, isAdmin, exportCSV);
 router.get('/export/excel', authenticate, isAdmin, exportExcel);
 // 🟢 Fetch chart data
 router.get('/prediction-stats', authenticate, isAdmin, fetchPredictionStats);
+<<<<<<< HEAD
 
+=======
+router.get('/feedbacks',authenticate, isAdmin,getAllFeedback);
+>>>>>>> 1845fcf (Initial commit)
 
 module.exports = router;

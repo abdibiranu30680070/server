@@ -45,6 +45,7 @@ const getAllPatients = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 // 🟢 Delete a user by ID (Admin only)
 const deleteUser = async (req, res) => {
   const userId = req.params.id; // Keep it as a string
@@ -56,6 +57,40 @@ const deleteUser = async (req, res) => {
   }
 };
 
+=======
+const deleteUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // 1️⃣ Get the patient's ID related to this user using findFirst
+    const patient = await prisma.patient.findFirst({ where: { userId } });
+
+    // 2️⃣ If the patient exists, delete related notifications first
+    if (patient) {
+      await prisma.notification.deleteMany({ where: { patientId: patient.Id } });
+
+      // 3️⃣ Delete the patient
+      await prisma.patient.delete({ where: { Id: patient.Id } });
+    }
+
+    // 4️⃣ Delete the user
+    await prisma.user.delete({ where: { id: userId } });
+
+    res.status(204).send(); // No content
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Failed to delete user", details: error.message });
+  }
+};
+
+
+
+>>>>>>> 1845fcf (Initial commit)
 // 🟢 Update user role
 const updateUserRole = async (req, res) => {
   const userId = req.params.id; // Keep it as a string
@@ -141,6 +176,7 @@ const deletePatient = async (req, res) => {
       return res.status(404).json({ error: "Patient not found" });
     }
 
+<<<<<<< HEAD
     await prisma.patient.delete({ where: { Id: patientId } });
     res.status(204).send();
   } catch (error) {
@@ -149,6 +185,24 @@ const deletePatient = async (req, res) => {
   }
 };
 
+=======
+    // 🔥 First delete related notifications
+    await prisma.notification.deleteMany({
+      where: { patientId: patientId },
+    });
+
+    // 🗑 Now delete the patient
+    await prisma.patient.delete({ where: { Id: patientId } });
+
+    res.status(204).send(); // No Content
+  } catch (error) {
+    console.error("Error deleting patient:", error);
+    res.status(500).json({ error: "Failed to delete patient", details: error.message });
+  }
+};
+
+
+>>>>>>> 1845fcf (Initial commit)
 // 🟢 Shared filter builder and data fetcher
 const buildExportFilters = async (req) => {
   const { dateFrom, dateTo, prediction } = req.query;
@@ -301,8 +355,37 @@ const fetchPredictionStats = async (req, res) => {
 
 
 
+<<<<<<< HEAD
 module.exports = { 
   getAllUsers, getAllPatients, deleteUser, updateUserRole, 
   fetchSystemStats, fetchAuditLogs, deletePatient, 
   exportCSV, exportExcel , fetchPredictionStats
+=======
+// 🟢 Get all feedbacks
+const getAllFeedback = async (req, res) => {
+  try {
+    const feedbacks = await prisma.feedback.findMany({
+      select: {
+        id: true,
+        message: true,
+        createdAt: true,
+        user: {
+          select: { id: true, name: true, email: true } // optional: include user info
+        }
+      },
+      orderBy: { createdAt: 'desc' } // newest first
+    });
+    res.json(feedbacks);
+  } catch (error) {
+    console.error("Error fetching feedback:", error);
+    res.status(500).json({ error: 'Failed to fetch feedback' });
+  }
+};
+
+module.exports = { 
+  getAllUsers, getAllPatients, deleteUser, updateUserRole, 
+  fetchSystemStats, fetchAuditLogs, deletePatient, 
+  exportCSV, exportExcel, fetchPredictionStats,
+  getAllFeedback // ← add this
+>>>>>>> 1845fcf (Initial commit)
 };
