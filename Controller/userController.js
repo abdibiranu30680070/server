@@ -62,35 +62,33 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     const { email, name, password, role } = req.body;
+    console.log("Received data:", { email, name, password, role });
 
-    console.log("Received data:", { email, name, password, role }); // Debugging
-
-    // Validate input
     if (!email || !name || !password) {
+      console.log("Validation failed");
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Check existing user
+    console.log("Checking if user exists...");
     const existingUser = await userServices.checkIfFound(email);
     if (existingUser) {
+      console.log("User already exists");
       return res.status(409).json({ error: "User already exists" });
     }
 
-    // Define allowed admin roles
-    const adminRoles = ["superadmin", "admin", "moderator"];
-    
-    // Assign role, defaulting to "user" if not an admin role
-    const userRole = adminRoles.includes(role) ? role : "user";
+    console.log("Proceeding to register new user...");
+    const userRole = ["superadmin", "admin", "moderator"].includes(role) ? role : "user";
 
-    // Create new user
     const newUser = await userServices.registerUser(email, name, password, userRole);
+    console.log("New user registered:", newUser);
 
-    // Token generation and response
     const token = auth.generateToken({
       userId: newUser.id,
       email: newUser.email,
       role: userRole
     });
+
+    console.log("Token generated");
 
     res.status(201).json({
       message: "Registration successful",
@@ -104,10 +102,11 @@ const register = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Registration error:", error); // Make sure this prints detailed info
     res.status(500).json({ error: error.message || "Registration failed" });
   }
 };
+
 
 // In authController.js - Add these new controllers
 const forgotPassword = async (req, res) => {
